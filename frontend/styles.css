@@ -1,0 +1,1347 @@
+/* ===== НАСТРОЙКА ШРИФТОВ ===== */
+
+/* ===== МИНЕКРАФТ ШРИФТ ===== */
+
+/* Подключение шрифта Minecraft */
+@font-face {
+    font-family: 'MyFont'; /* Имя для использования в CSS */
+    src: url('fonts/minecraft.ttf') format('truetype'); /* Путь к TTF файлу */
+}
+
+/* Применение шрифта Minecraft к элементам с классом .body */
+.body {
+    font-family: 'MyFont', sans-serif; /* Шрифт Minecraft с fallback */
+}
+
+/* Подключение жирного шрифта Lazare Grotesk */
+@font-face {
+  font-family: "Lazare Grotesk"; /* Название шрифта для использования в CSS */
+  src:
+    url("/fonts/LazareGrotesk-Bold.woff2") format("woff2"), /* Современный формат с лучшим сжатием */
+    url("/fonts/LazareGrotesk-Bold.woff") format("woff"); /* Стандартный веб-формат */
+  font-weight: 700 900; /* Диапазон жирности шрифта (от bold до black) */
+  font-style: normal; /* Обычное начертание (не курсив) */
+  font-display: swap; /* Стратегия отображения: сначала системный, потом подгруженный */
+}
+
+/* Подключение обычного шрифта Super Tasty */
+@font-face {
+  font-family: "Super Tasty";
+  src:
+    url("/fonts/SuperTasty-Regular.woff2") format("woff2"),
+    url("/fonts/SuperTasty-Regular.woff") format("woff");
+  font-weight: 400; /* Обычная жирность (regular) */
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ===== CSS ПЕРЕМЕННЫЕ (ЦВЕТА И НАСТРОЙКИ) ===== */
+:root {
+  /* Основные цвета фона */
+  --bg: #071106;
+  --bg-2: #0b1a08;
+  --card: #0f1f0c; /* Цвет карточек */
+  --muted: #0d150b; /* Приглушенный цвет */
+  
+  /* Цвета текста */
+  --text: #e8ffe8; /* Основной текст */
+  --text-dim: #b6f5c3; /* Второстепенный текст */
+  
+  /* Брендовые цвета (зеленая палитра) */
+  --brand: #17c964;
+  --brand-2: #b8ff3e;
+  --brand-3: #3effc2;
+  --brand-4: #c1ff4d;
+  --accent: #7dffa0;
+  
+  /* Границы и тени */
+  --border: rgba(255,255,255,0.08); /* Полупрозрачная граница */
+  --shadow: 0 8px 30px rgba(0,0,0,0.35); /* Тень по умолчанию */
+}
+
+/* ===== СБРОС И БАЗОВЫЕ СТИЛИ ===== */
+
+/* Убираем внутренние отступы у всех элементов */
+* { box-sizing: border-box; } /* Чтобы padding не увеличивал размер элемента */
+
+/* Отключаем плавную прокрутку */
+html { scroll-behavior: auto; }
+
+/* Базовые стили для всей страницы */
+html, body {
+  margin: 0; /* Убираем отступы по умолчанию */
+  padding: 0;
+  /* Радиальный градиент фона с центром сверху */
+  background: radial-gradient(120% 100% at 50% 0%, #046704 0%, #050a04 60%, var(--bg));
+  color: var(--text); /* Цвет текста из переменной */
+  /* Система шрифтов с fallback */
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+/* Стили для ссылок */
+a { 
+  color: inherit; /* Наследует цвет от родителя */
+  text-decoration: none; /* Убираем подчеркивание */
+}
+
+/* ===== ОБЩИЕ КЛАССЫ ===== */
+
+/* Контейнер для центрирования контента */
+.wrap {
+  max-width: 1200px; /* Максимальная ширина */
+  margin: 0 auto; /* Автоматические отступы по бокам (центрирование) */
+  padding: 0 20px; /* Отступы по бокам на мобильных */
+}
+
+/* ===== ШАПКА САЙТА (HEADER) ===== */
+
+header {
+  position: relative; /* Для позиционирования дочерних элементов */
+  height: 92vh; /* 92% от высоты экрана */
+  min-height: 640px; /* Минимальная высота */
+  overflow: hidden; /* Скрываем все, что выходит за границы */
+  /* Вертикальный градиент фона */
+  background: linear-gradient(180deg, var(--bg-2), #061006 70%, #050a04);
+  display: flex; /* Flexbox для центрирования */
+  align-items: center; /* Вертикальное центрирование */
+  justify-content: center; /* Горизонтальное центрирование */
+  isolation: isolate; /* Создает новый контекст наложения */
+}
+
+/* ===== ВИЗУАЛЬНЫЕ ЭФФЕКТЫ ===== */
+
+/* Шумовая текстура для фона */
+.noise {
+  position: absolute; /* Абсолютное позиционирование */
+  inset: -10%; /* Растягиваем на 10% больше контейнера */
+  pointer-events: none; /* Не блокирует клики */
+  opacity: .04; /* Еле заметная прозрачность */
+  mix-blend-mode: soft-light; /* Режим смешивания */
+  /* SVG-шум в виде data URL */
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="140" height="140"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/></filter><rect width="100%25" height="100%25" filter="url(%23n)"/></svg>');
+  background-size: 140px 140px; /* Размер паттерна */
+  animation: noiseShift 8s linear infinite; /* Бесконечная анимация */
+}
+
+/* Анимация движения шума */
+@keyframes noiseShift {
+  from { transform: translate3d(0,0,0) } /* Начальное положение */
+  to   { transform: translate3d(-140px,-140px,0) } /* Конечное положение */
+}
+
+/* Контейнер для параллакс-эффекта */
+.parallax {
+  position: absolute;
+  inset: 0; /* Растягиваем на весь родитель */
+  pointer-events: none;
+  transition: transform .15s linear; /* Плавное движение */
+  will-change: transform; /* Подсказка браузеру для оптимизации */
+}
+
+/* ===== АНИМИРОВАННЫЕ ПЛИТКИ ФОНА ===== */
+
+.tiles {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  filter: saturate(1.05) contrast(1.02); /* Легкое усиление цвета */
+  will-change: transform;
+}
+
+.rows { 
+  position: absolute; 
+  inset: 0; 
+  perspective: 1000px; /* 3D-перспектива для рядов */
+}
+
+/* Стили для каждого ряда плиток */
+.row {
+  position: absolute;
+  left: 0; right: 0;
+  display: flex; /* Flexbox для горизонтального расположения */
+  gap: 16px; /* Расстояние между плитками */
+  padding: 10px 0;
+  white-space: nowrap; /* Запрещаем перенос строк */
+  will-change: transform;
+  backface-visibility: hidden; /* Скрываем обратную сторону при 3D-трансформациях */
+}
+
+/* Позиционирование рядов по вертикали */
+.row[data-pos="top"]{ top: 6% } /* Верхний ряд */
+.row[data-pos="mid"]{ top: 34% } /* Средний ряд */
+.row[data-pos="bot"]{ top: 62% } /* Нижний ряд */
+
+/* Контейнер для бесконечной анимации */
+.track {
+  display: flex;
+  gap: 16px;
+  will-change: transform;
+  animation: scrollX linear infinite; /* Бесконечная горизонтальная анимация */
+}
+
+/* Разная скорость анимации для каждого ряда */
+.row[data-pos="top"] .track{ animation-duration: 48s } /* 48 секунд на полный цикл */
+.row[data-pos="mid"] .track{ animation-duration: 56s; animation-direction: reverse } /* Обратное направление */
+.row[data-pos="bot"] .track{ animation-duration: 54s }
+
+/* Ключевые кадры горизонтальной прокрутки */
+@keyframes scrollX {
+  from { transform: translate3d(0,0,0) } /* Начало */
+  to   { transform: translate3d(-50%,0,0) } /* Сдвиг на половину ширины */
+}
+
+/* ===== ОТДЕЛЬНАЯ ПЛИТКА ===== */
+
+.tile {
+  flex: 0 0 auto; /* Не растягивается и не сжимается */
+  width: 320px; /* Фиксированная ширина */
+  height: 180px; /* Фиксированная высота (16:9) */
+  border-radius: 16px; /* Скругленные углы */
+  overflow: hidden; /* Обрезаем все, что выходит за границы */
+  background: #0c160a; /* Цвет фона плитки */
+  border: 1px solid rgba(255,255,255,0.06); /* Полупрозрачная граница */
+  /* Многослойная тень */
+  box-shadow:
+    0 2px 0 rgba(0,0,0,0.5), /* Нижняя тень */
+    0 12px 36px rgba(0,0,0,0.45); /* Размытая тень */
+  opacity: .92; /* Легкая прозрачность */
+  transform: translateZ(0); /* Включаем аппаратное ускорение */
+  /* Плавные переходы для интерактивности */
+  transition:
+    transform .4s cubic-bezier(.2,.8,.2,1), /* Кастомная функция easing */
+    box-shadow .4s,
+    filter .4s,
+    opacity .4s;
+  position: relative; /* Для позиционирования псевдоэлементов */
+}
+
+/* Модификаторы для широких плиток */
+.tile.is-wide { width: 420px } /* Широкая плитка */
+.tile.is-ultra { width: 520px } /* Очень широкая плитка */
+
+/* Изображение внутри плитки */
+.tile img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Заполняем контейнер с обрезкой */
+  filter: brightness(.7) saturate(1.02); /* Приглушенный и насыщенный */
+  transition: filter .45s, transform .45s, opacity .45s;
+}
+
+/* Состояния плитки при наведении и удержании */
+.tile.hovering img,
+.tile.hold img {
+  filter: brightness(1) saturate(1.15); /* Ярче и насыщеннее */
+}
+
+/* ===== ЗАТЕМНЕНИЕ ВСЕГО ФОНА КРОМЕ ЦЕНТРАЛЬНОЙ ОБЛАСТИ ===== */
+header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at center,
+    rgba(7, 17, 6, 0) 0%,
+    rgba(7, 17, 6, 0) 25%,
+    rgba(7, 17, 6, 0.8) 45%,
+    rgba(7, 17, 6, 0.95) 100%
+  );
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Затемнение углов (виньетка) */
+header::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at center,
+    transparent 0%,
+    rgba(0, 0, 0, 0.5) 100%
+  );
+  z-index: 1;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+}
+
+/* Убедитесь, что контент выше затемнения */
+.hero {
+  position: relative;
+  z-index: 2;
+}
+
+/* Дополнительно затемняем сами плитки фона */
+.tile {
+  opacity: 0.7; /* Делаем плитки полупрозрачными */
+}
+
+.tile.hovering,
+.tile.hold {
+  opacity: 0.9; /* При наведении немного ярче */
+}
+
+/* Затемнение для изображений в плитках */
+.tile img {
+  filter: brightness(0.6) saturate(0.9) contrast(1.1);
+}
+
+.tile.hovering img,
+.tile.hold img {
+  filter: brightness(0.8) saturate(1.05); /* При наведении немного ярче */
+}
+
+/* Параллакс-эффект тоже затемняем */
+.parallax {
+  opacity: 0.8;
+}
+/* Эффект свечения при наведении */
+.tile::after {
+  content: "";
+  position: absolute;
+  inset: 0; /* Заполняет всю плитку */
+  /* Радиальный градиент свечения */
+  background: radial-gradient(80% 80% at 50% 50%, rgba(56,255,160,0) 0%, rgba(56,255,160,0) 55%, rgba(56,255,160,0.18) 100%);
+  opacity: 0; /* Изначально невидим */
+  transition: opacity .45s;
+  pointer-events: none; /* Не блокирует клики */
+}
+
+/* Показываем свечение при наведении */
+.tile.hovering::after,
+.tile.hold::after { opacity: 1 }
+
+/* Эффекты при наведении на плитку */
+.tile:hover {
+  transform: translateY(-6px) scale(1.015); /* Поднимаем и увеличиваем */
+  /* Яркая тень с зеленым оттенком */
+  box-shadow:
+    0 8px 32px rgba(23,201,100,0.22),
+    0 24px 60px rgba(0,0,0,0.5);
+  opacity: 1; /* Полная непрозрачность */
+}
+
+/* ===== ГЛАВНАЯ СЕКЦИЯ (HERO) ===== */
+
+.hero {
+  position: relative;
+  z-index: 2; /* Выше фоновых элементов */
+  margin-top: 10px;
+  padding: 70px 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column; /* Вертикальное расположение */
+  gap: 14px; /* Расстояние между элементами */
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: none; /* Без размытия фона */
+}
+
+/* Блок с логотипом */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 18px; /* Расстояние между логотипом и текстом */
+  filter: drop-shadow(0 0 10px rgba(0,0,0,0.6)); /* Тень логотипа */
+  position: relative;
+  margin-bottom: 2px;
+}
+
+/* Контейнер для изображения логотипа */
+.logo-img-wrap {
+  position: relative;
+  /* Адаптивный размер логотипа */
+  width: clamp(140px, 20vw, 300px); /* Минимум 140px, идеально 20% ширины экрана, максимум 300px */
+  height: clamp(140px, 20vw, 300px);
+  display: grid;
+  place-items: center; /* Центрируем по горизонтали и вертикали */
+  overflow: visible;
+  isolation: isolate; /* Создает новый контекст наложения */
+}
+
+/* Свечение вокруг логотипа */
+.logo-img-wrap::after {
+  content: "";
+  position: absolute;
+  inset: -12%; /* Больше размера логотипа */
+  /* Радиальный градиент свечения */
+  background: radial-gradient(60% 60% at 50% 50%, rgba(184,255,62,0.18), rgba(184,255,62,0) 70%);
+  filter: blur(10px); /* Размытие для мягкого свечения */
+  z-index: -1; /* Под изображением */
+  pointer-events: none;
+}
+
+/* Само изображение логотипа */
+.logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* Вписываем без обрезки */
+  display: block;
+  /* Многослойные тени для эффекта свечения */
+  filter:
+    drop-shadow(0 14px 28px rgba(0,0,0,0.55))
+    drop-shadow(0 0 22px rgba(184,255,62,0.35))
+    drop-shadow(0 0 48px rgba(23,201,100,0.28))
+    drop-shadow(0 0 80px rgba(61,255,150,0.18));
+  animation: logoPulse 5.5s ease-in-out infinite; /* Пульсация */
+  transform-origin: center; /* Точка трансформации в центре */
+}
+
+/* Анимация пульсации логотипа */
+@keyframes logoPulse {
+  0%,100% { transform: scale(1) } /* Нормальный размер */
+  50% { transform: scale(1.04) } /* Увеличенный размер */
+}
+
+/* Скрываем текстовую часть логотипа */
+.logo-title { display: none }
+
+/* ===== ТИПОГРАФИКА ===== */
+
+/* Главный заголовок */
+h1 {
+  font-family: "Lazare Grotesk", Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  font-weight: 800; /* Жирное начертание */
+  /* Адаптивный размер шрифта */
+  font-size: clamp(34px,6vw,72px); /* Минимум 34px, идеально 6% ширины экрана, максимум 72px */
+  line-height: 1.02; /* Межстрочный интервал */
+  letter-spacing: .2px; /* Межбуквенный интервал */
+  margin: 0; /* Убираем отступы */
+  /* Тень текста */
+  text-shadow: 0 2px 0 #06290f, 0 16px 40px rgba(0,0,0,0.6);
+}
+
+/* Подзаголовок */
+.lead {
+  max-width: 900px; /* Максимальная ширина блока */
+  color: var(--text-dim); /* Приглушенный цвет текста */
+  /* Адаптивный размер шрифта */
+  font-size: clamp(24px,3.2vw,44px);
+  font-family: 'MyFont', sans-serif; /* Шрифт Minecraft */
+  line-height: 1.06;
+  letter-spacing: .2px;
+  /* Тень текста */
+  text-shadow: 0 1px 0 #06290f, 0 12px 28px rgba(0,0,0,0.5);
+}
+
+/* ===== КНОПКИ ПРИЗЫВА К ДЕЙСТВИЮ ===== */
+
+.cta {
+  display: flex;
+  gap: 12px; /* Расстояние между кнопками */
+  align-items: center;
+  justify-content: center;
+  margin-top: 16px;
+  flex-wrap: wrap; /* Перенос на новую строку при нехватке места */
+  background: transparent;
+  padding: 0;
+  border-radius: 999px; /* Полностью скругленные углы */
+  border: 0;
+  backdrop-filter: none;
+}
+
+/* Базовая кнопка */
+.btn {
+  position: relative;
+  padding: 18px 34px;
+  border-radius: 999px; /* Круглая кнопка */
+  border: 1px solid #1f3b1b; /* Темно-зеленая граница */
+  font-weight: 900; /* Очень жирный текст */
+  letter-spacing: .3px;
+  cursor: pointer; /* Указатель при наведении */
+  transition: transform .2s ease, filter .2s ease; /* Плавные переходы */
+  overflow: hidden; /* Скрываем все, что выходит за границы */
+  isolation: isolate; /* Создает новый контекст наложения */
+}
+
+/* Эффект нажатия */
+.btn:active { transform: translateY(1px) } /* Сдвиг вниз */
+
+/* Основная кнопка (зеленая) */
+.btn-primary {
+  color: #0b1a08; /* Темный текст */
+  /* Многослойный градиентный фон */
+  background:
+    radial-gradient(150% 200% at 50% -40%, var(--brand-2), var(--brand) 60%),
+    linear-gradient(180deg, rgba(255,255,255,.18), rgba(0,0,0,.12));
+  /* Многослойная тень */
+  box-shadow:
+    0 14px 36px rgba(184,255,62,0.28), /* Внешняя тень */
+    inset 0 0 0 1px rgba(0,0,0,0.12), /* Внутренняя тень (обводка) */
+    0 0 0 1px rgba(184,255,62,0.35); /* Внешняя обводка */
+  filter: saturate(1.05); /* Легкое увеличение насыщенности */
+}
+
+/* Эффект при наведении на основную кнопку */
+.btn-primary:hover {
+  transform: translateY(-1px) scale(1.02); /* Поднимаем и увеличиваем */
+  filter: saturate(1.12); /* Увеличиваем насыщенность */
+}
+
+/* Вторичная кнопка (прозрачная) */
+.btn-ghost {
+  background: transparent; /* Прозрачный фон */
+  color: var(--text); /* Цвет текста из переменной */
+  border-color: var(--border); /* Цвет границы из переменной */
+}
+
+/* Кольцо свечения вокруг основной кнопки */
+.btn-primary .ring {
+  position: absolute;
+  inset: -2px; /* Чуть больше самой кнопки */
+  border-radius: 999px;
+  pointer-events: none; /* Не блокирует клики */
+  mix-blend-mode: soft-light; /* Режим смешивания */
+}
+
+/* Конусный градиент для анимированного кольца */
+.btn-primary .ring::before,
+.btn-primary .ring::after {
+  content: "";
+  position: absolute;
+  inset: -10px; /* Еще больше основного кольца */
+  border-radius: inherit; /* Наследует скругление */
+  filter: blur(12px); /* Размытие для мягкости */
+  opacity: .65;
+  /* Конусный градиент с переменным углом */
+  background:
+    conic-gradient(
+      from var(--a,0deg), /* Угол начала градиента */
+      rgba(184,255,62,0) 0deg,
+      rgba(184,255,62,.5) 90deg,
+      rgba(56,255,160,0) 180deg,
+      rgba(184,255,62,.4) 270deg,
+      rgba(184,255,62,0) 360deg
+    );
+  animation: orbit 4.8s linear infinite; /* Вращение */
+}
+
+/* Второе кольцо с другим углом и скоростью */
+.btn-primary .ring::after {
+  --a: 180deg; /* Начальный угол 180 градусов */
+  animation-duration: 6.2s; /* Другая скорость */
+  opacity: .5;
+  filter: blur(16px); /* Больше размытие */
+}
+
+/* Анимация вращения кольца */
+@keyframes orbit {
+  to { transform: rotate(360deg) } /* Полный оборот */
+}
+
+/* Эффект блика на кнопке */
+.btn-primary::after {
+  content: "";
+  position: absolute;
+  top: -40%;
+  left: -60%;
+  width: 120%;
+  height: 180%;
+  /* Градиент для эффекта глянца */
+  background: radial-gradient(60% 60% at 0% 0%, rgba(255,255,255,.45), rgba(255,255,255,0) 70%);
+  transform: rotate(12deg); /* Наклон */
+  animation: gloss 3.4s ease-in-out infinite alternate; /* Плавное движение */
+  mix-blend-mode: soft-light; /* Режим смешивания */
+  pointer-events: none;
+}
+
+/* Анимация движения блика */
+@keyframes gloss {
+  from { transform: rotate(12deg) translateX(-6%) } /* Левее */
+  to   { transform: rotate(12deg) translateX(6%) } /* Правее */
+}
+
+/* ===== СЕКЦИИ СОДЕРЖИМОГО ===== */
+
+/* Базовая секция */
+section { padding: 80px 0 } /* Отступы сверху и снизу */
+
+/* Карточка (блок контента) */
+.block {
+  background: linear-gradient(180deg, var(--card), #0b1709); /* Градиентный фон */
+  border: 1px solid var(--border); /* Граница из переменной */
+  border-radius: 24px; /* Скругленные углы */
+  padding: 26px; /* Внутренние отступы */
+  box-shadow: var(--shadow); /* Тень из переменной */
+}
+
+/* Список внутри карточки */
+.block .list {
+  display: grid; /* CSS Grid для расположения */
+  gap: 14px; /* Расстояние между элементами */
+  margin-top: 12px; /* Отступ сверху */
+}
+
+
+/* Строка с иконкой и текстом */
+.row-box {
+  display: flex;
+  gap: 12px; /* Расстояние между иконкой и текстом */
+  align-items: center;
+  background: var(--muted); /* Фон из переменной */
+  border: 1px solid #152413; /* Темно-зеленая граница */
+  padding: 12px 14px; /* Внутренние отступы */
+  border-radius: 14px; /* Скругленные углы */
+}
+
+/* Иконка в строке */
+.row-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px; /* Скругленные углы */
+  display: grid;
+  place-items: center; /* Центрируем содержимое */
+  color: #0a2a14; /* Темно-зеленый текст */
+  background: linear-gradient(135deg, var(--brand-2), var(--brand)); /* Диагональный градиент */
+}
+
+/* ===== БЛОК СОТРУДНИКОВ ===== */
+
+/* ===== МАКЕТ ВЫБОРА РОЛЕЙ В ЕДИНОМ СТИЛЕ ===== */
+
+.container {
+    display: flex;
+    min-height: 500px;
+    margin-top: 40px;
+    border: 2px solid #333;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #1e1e1e;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+}
+
+.sidebar {
+    width: 320px;
+    background: #2c2c2c;
+    border-right: 2px solid #3e3e3e;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 0;
+}
+
+.sidebar button {
+    font-family: 'Press Start 2P', monospace;
+    background: #3e3e3e;
+    border: none;
+    border-left: 4px solid transparent;
+    color: #fff;
+    padding: 16px 20px;
+    text-align: left;
+    cursor: pointer;
+    font-size: 0.8em;
+    margin: 4px 20px;
+    transition: all 0.2s ease;
+    text-shadow: 1px 1px 0 #000;
+    border-radius: 0 6px 6px 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.sidebar button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(23,201,100,0.1), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+}
+
+.sidebar button:hover::before {
+    transform: translateX(100%);
+}
+
+.sidebar button:hover {
+    background: #4e4e4e;
+    color: #7dffa0;
+    border-left-color: #17c964;
+    transform: translateX(4px);
+    box-shadow: 2px 0 10px rgba(23,201,100,0.2);
+}
+
+.sidebar button.active {
+    background: #3e3e3e;
+    color: #17c964;
+    border-left-color: #17c964;
+    box-shadow: inset 4px 0 0 #17c964;
+    font-weight: bold;
+}
+
+.sidebar button.active:hover {
+    background: #4e4e4e;
+    color: #7dffa0;
+}
+
+.content {
+    flex: 1;
+    padding: 30px;
+    background: #1e1e1e;
+    overflow-y: auto;
+    position: relative;
+}
+
+.content h1 {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 1.2em;
+    color: #fff;
+    margin: 0 0 20px 0;
+    text-shadow: 2px 2px 0 #000;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #3e3e3e;
+}
+
+.content ul {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.8em;
+    color: #e8ffe8;
+    list-style: none;
+    padding: 0;
+    margin: 0 0 20px 0;
+}
+
+.content li {
+    margin-bottom: 10px;
+    padding: 8px 0 8px 20px;
+    position: relative;
+    line-height: 1.5;
+    opacity: 0.9;
+}
+
+.content li::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: #17c964;
+    font-size: 0.9em;
+}
+
+.highlight {
+    color: #17c964;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.8em;
+    padding: 12px;
+    background: rgba(23,201,100,0.1);
+    border: 1px solid rgba(23,201,100,0.3);
+    border-radius: 6px;
+    margin-top: 20px;
+    text-align: center;
+    text-shadow: 1px 1px 0 #000;
+}
+
+/* Адаптивность для меню ролей */
+@media (max-width: 926px) {
+    .container {
+        flex-direction: column;
+        margin: 40px 20px 0 20px;
+        min-height: auto;
+    }
+    
+    .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 2px solid #3e3e3e;
+        padding: 15px 0;
+        flex-direction: row;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+    
+    .sidebar button {
+        flex: 0 0 auto;
+        margin: 4px 10px;
+        padding: 12px 15px;
+        font-size: 0.7em;
+        border-left: none;
+        border-bottom: 4px solid transparent;
+        border-radius: 6px 6px 0 0;
+        text-align: center;
+        min-width: 140px;
+    }
+    
+    .sidebar button:hover {
+        transform: translateY(-2px);
+        border-left-color: transparent;
+        border-bottom-color: #17c964;
+    }
+    
+    .sidebar button.active {
+        border-left-color: transparent;
+        border-bottom-color: #17c964;
+        box-shadow: inset 0 4px 0 #17c964;
+    }
+    
+    .content {
+        padding: 20px;
+    }
+    
+    .content h1 {
+        font-size: 1em;
+    }
+    
+    .content ul {
+        font-size: 0.75em;
+    }
+    
+    .highlight {
+        font-size: 0.75em;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        margin: 40px 10px 0 10px;
+    }
+    
+    .sidebar {
+        padding: 10px 0;
+    }
+    
+    .sidebar button {
+        padding: 10px 12px;
+        font-size: 0.65em;
+        min-width: 120px;
+        margin: 4px 8px;
+    }
+    
+    .content {
+        padding: 15px;
+    }
+    
+    .content h1 {
+        font-size: 0.9em;
+        margin-bottom: 15px;
+    }
+    
+    .content li {
+        padding: 6px 0 6px 16px;
+        font-size: 0.7em;
+    }
+}
+
+/* Анимация появления контента */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.content h1,
+.content ul,
+.content .highlight {
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* ---------------------Подача заявки-----------------------*/
+
+/* ===== ФОРМА ЗАЯВКИ В СТИЛЕ САЙТА С НОВЫМИ ЦВЕТАМИ И РАЗМЕРАМИ ===== */
+/* Добавьте в конец файла styles.css */
+
+/* ===== СТИЛИ ДЛЯ ПОЛЯ TELEGRAM ===== */
+.telegram-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #1e1e1e;
+    border: 2px solid #3e3e3e;
+    border-radius: 4px;
+    padding: 0 12px;
+    transition: all 0.2s;
+}
+
+.telegram-input-wrapper:focus-within {
+    border-color: #17c964;
+    box-shadow: 0 0 8px rgba(23,201,100,0.3);
+    background: #242424;
+}
+
+.telegram-prefix {
+    color: #17c964;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.85em;
+    font-weight: bold;
+    text-shadow: 1px 1px 0 #000;
+    user-select: none;
+}
+
+.telegram-input {
+    border: none;
+    background: transparent;
+    color: #fff;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.85em;
+    padding: 12px 0;
+    width: 100%;
+    outline: none;
+}
+
+.telegram-input::placeholder {
+    color: #666;
+    opacity: 0.7;
+}
+
+/* Стиль для иконки Telegram */
+.telegram-icon {
+    display: inline-block;
+    margin-right: 6px;
+    vertical-align: middle;
+    font-size: 1.1em;
+}
+
+/* Информационное сообщение */
+.telegram-info-box {
+    background: rgba(23,201,100,0.1);
+    border: 1px solid rgba(23,201,100,0.3);
+    border-radius: 6px;
+    padding: 12px;
+    margin-top: 10px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.75em;
+    color: #b6f5c3;
+    text-shadow: 1px 1px 0 #000;
+}
+
+.telegram-info-box a {
+    color: #17c964;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.telegram-info-box a:hover {
+    color: #7dffa0;
+    text-decoration: underline;
+}
+
+/* Стили для валидации */
+input:valid {
+    border-color: #17c964;
+}
+
+input:invalid:not(:placeholder-shown) {
+    border-color: #ff4757;
+}
+
+.validation-message {
+    font-size: 0.75em;
+    margin-top: 5px;
+    padding: 5px 10px;
+    border-radius: 4px;
+    display: none;
+}
+
+input:invalid:not(:placeholder-shown) ~ .validation-message {
+    display: block;
+    background: rgba(255,71,87,0.1);
+    color: #ff6b81;
+    border: 1px solid rgba(255,71,87,0.3);
+}
+/* Эффект пиксельной сетки для формы */
+.pixel-grid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+    background-size: 20px 20px;
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0.1;
+}
+
+/* Контейнер формы - новая ширина и отступ сверху */
+.application-box {
+    background: #1e1e1e;
+    border: 2px solid #333;
+    border-radius: 12px;
+    padding: 30px;
+    width: 1160px; /* Точная ширина как запрошено */
+    max-width: 100%; /* Для адаптивности на мобильных */
+    box-sizing: border-box; /* Чтобы padding не увеличивал ширину */
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    position: relative;
+    overflow: hidden;
+    margin: 20px auto 0 auto; /* 20px отступ сверху, остальные автоматически */
+}
+
+/* Заголовок формы */
+.mc-title {
+    text-align: center;
+    margin-bottom: 30px;
+    position: relative;
+}
+
+.mc-title h1 {
+    font-family: "Press Start 2P", "Lazare Grotesk", Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    font-weight: 700;
+    font-size: clamp(22px, 4vw, 36px);
+    color: #fff;
+    text-shadow: 2px 2px 0 #000;
+    margin-bottom: 10px;
+    position: relative;
+    display: inline-block;
+}
+
+.mc-title h1::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 10%;
+    right: 10%;
+    height: 3px;
+    background: linear-gradient(90deg, 
+        transparent, 
+        #3effc2, 
+        #17c964, 
+        #3effc2, 
+        transparent);
+}
+
+.mc-subtitle {
+    color: #b6f5c3;
+    font-size: 1em;
+    margin-top: 10px;
+    text-shadow: 1px 1px 0 #000;
+    font-family: 'Press Start 2P', 'MyFont', sans-serif;
+    font-size: 0.9em;
+    opacity: 0.9;
+}
+
+/* Секции формы */
+.form-section {
+    margin-bottom: 20px;
+    background: #2c2c2c;
+    border: 2px solid #3e3e3e;
+    border-radius: 8px;
+    padding: 20px;
+    position: relative;
+}
+
+.section-title {
+    background: #3e3e3e;
+    color: #fff;
+    padding: 10px 20px;
+    margin: -20px -20px 20px -20px;
+    border-radius: 6px 6px 0 0;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.9em;
+    font-weight: 400;
+    text-shadow: 1px 1px 0 #000;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 2px solid #333;
+}
+
+.section-title::before {
+    font-size: 1.2em;
+}
+
+/* Поля ввода */
+.mc-input-group {
+    margin-bottom: 15px;
+}
+
+.mc-label {
+    display: block;
+    color: #e8ffe8;
+    margin-bottom: 8px;
+    font-size: 0.85em;
+    text-shadow: 1px 1px 0 #000;
+    font-family: 'Press Start 2P', 'MyFont', sans-serif;
+    opacity: 0.9;
+}
+
+.mc-input, .mc-select, textarea.mc-input {
+    width: 100%;
+    padding: 12px 15px;
+    background: #1e1e1e;
+    border: 2px solid #3e3e3e;
+    color: #fff;
+    font-family: 'Press Start 2P', 'MyFont', monospace;
+    font-size: 0.85em;
+    outline: none;
+    transition: all 0.2s;
+    border-radius: 4px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.mc-input:focus, .mc-select:focus, textarea.mc-input:focus {
+    border-color: #17c964;
+    box-shadow: 
+        inset 0 2px 4px rgba(0,0,0,0.3),
+        0 0 8px rgba(23,201,100,0.4);
+    background: #242424;
+}
+
+.mc-select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='%2317c964'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+}
+
+textarea.mc-input {
+    min-height: 100px;
+    resize: vertical;
+    line-height: 1.4;
+}
+
+/* Плейсхолдеры */
+.mc-input::placeholder,
+.mc-select::placeholder,
+textarea.mc-input::placeholder {
+    color: #666;
+    opacity: 0.7;
+}
+
+/* Кнопка отправки */
+.mc-button {
+    background: linear-gradient(to bottom, #4e4e4e, #3e3e3e);
+    color: #fff;
+    border: 2px solid #333;
+    border-radius: 6px;
+    padding: 15px 30px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.9em;
+    font-weight: 400;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 1px 1px 0 #000;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 30px auto 0;
+    width: 100%;
+    max-width: 320px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 0 #2a2a2a;
+}
+
+.mc-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 
+        0 6px 0 #2a2a2a,
+        0 0 15px rgba(23,201,100,0.3);
+    background: linear-gradient(to bottom, #5e5e5e, #4e4e4e);
+    border-color: #17c964;
+}
+
+.mc-button:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #2a2a2a;
+}
+
+.mc-button::before {
+    content: '▶';
+    font-size: 0.8em;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.1); }
+}
+
+/* Состояние disabled кнопки */
+.mc-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: 0 4px 0 #2a2a2a !important;
+}
+
+/* Телеграм секция */
+.telegram-info {
+    background: #2c2c2c;
+    border: 2px solid #3e3e3e;
+    border-radius: 8px;
+    padding: 15px;
+    margin: 25px 0;
+    text-align: center;
+    position: relative;
+    font-family: 'Press Start 2P', monospace;
+}
+
+.telegram-info strong {
+    color: #17c964;
+    display: block;
+    margin-bottom: 10px;
+    font-size: 0.9em;
+    text-shadow: 1px 1px 0 #000;
+}
+
+.tg-link {
+    color: #17c964;
+    text-decoration: none;
+    font-weight: 400;
+    display: inline-block;
+    margin: 5px;
+    padding: 8px 16px;
+    background: #1e1e1e;
+    border: 2px solid #3e3e3e;
+    border-radius: 4px;
+    transition: all 0.2s;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.8em;
+}
+
+.tg-link:hover {
+    background: #3e3e3e;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    color: #7dffa0;
+    border-color: #17c964;
+}
+
+/* Нижний текст */
+.application-box > div:last-child {
+    text-align: center;
+    margin-top: 25px;
+    color: #7ba76d;
+    font-size: 0.8em;
+    border-top: 1px solid #3e3e3e;
+    padding-top: 15px;
+    font-family: 'Press Start 2P', monospace;
+    opacity: 0.8;
+}
+
+/* Анимации загрузки */
+.loading-dots {
+    display: inline-block;
+    width: 20px;
+    text-align: left;
+    font-family: monospace;
+}
+
+.loading-dots::after {
+    content: '...';
+    animation: dots 1.5s steps(4, end) infinite;
+}
+
+@keyframes dots {
+    0%, 20% { content: '.'; }
+    40% { content: '..'; }
+    60%, 100% { content: '...'; }
+}
+
+/* Адаптивность - теперь форма адаптируется для экранов меньше 926px */
+@media (max-width: 926px) {
+    .application-box {
+        width: calc(100% - 40px); /* Отступы по бокам на мобильных */
+        margin: 20px 20px 0 20px; /* 20px сверху и по бокам */
+        padding: 20px;
+        border-width: 1px;
+    }
+    
+    .mc-title h1 {
+        font-size: clamp(18px, 5vw, 28px);
+    }
+    
+    .mc-subtitle {
+        font-size: 0.8em;
+    }
+    
+    .mc-button {
+        padding: 12px 20px;
+        font-size: 0.8em;
+        max-width: 280px;
+    }
+    
+    .form-section {
+        padding: 15px;
+    }
+    
+    .section-title {
+        padding: 8px 15px;
+        margin: -15px -15px 15px -15px;
+        font-size: 0.8em;
+    }
+    
+    .mc-input, .mc-select, textarea.mc-input {
+        padding: 10px 12px;
+        font-size: 0.8em;
+    }
+    
+    .tg-link {
+        padding: 6px 12px;
+        font-size: 0.7em;
+    }
+}
+
+@media (max-width: 480px) {
+    .application-box {
+        width: calc(100% - 20px); /* Меньше отступов на очень маленьких экранах */
+        margin: 20px 10px 0 10px;
+        padding: 15px;
+    }
+    
+    .mc-button {
+        max-width: 100%; /* Кнопка на всю ширину на мобильных */
+    }
+}
+
+/* Специальные стили для выбранного option в select */
+.mc-select option {
+    background: #1e1e1e;
+    color: #fff;
+    padding: 10px;
+    font-family: 'Press Start 2P', monospace;
+}
+
+.mc-select option:checked {
+    background: #3e3e3e;
+    color: #17c964;
+}
+/* ===== ПОДВАЛ ===== */
+
+footer {
+  padding: 50px 0 70px; /* Отступы: сверху 50px, снизу 70px */
+  border-top: 1px solid var(--border); /* Верхняя граница */
+  background: rgba(0,0,0,0.2); /* Полупрозрачный черный фон */
+}
+
+/* Контейнер для логотипов брендов */
+.brands {
+  display: flex;
+  gap: 26px; /* Расстояние между логотипами */
+  justify-content: center; /* Центрирование по горизонтали */
+  align-items: center; /* Центрирование по вертикали */
+  opacity: .8; /* Легкая прозрачность */
+}
+
+/* ===== АДАПТИВНОСТЬ (MOBILE) ===== */
+
+/* Планшеты и маленькие десктопы (до 1199px) */
+@media (max-width: 1199px) {
+  .staff { grid-template-columns: repeat(2,1fr) } /* 2 колонки вместо 3 */
+}
+
+/* Мобильные устройства (до 740px) */
+@media (max-width: 740px) {
+  header { 
+    height: 86vh; /* Меньшая высота */
+    min-height: 560px; /* Меньшая минимальная высота */
+  }
+  
+  .staff { grid-template-columns: 1fr } /* 1 колонка (вертикальный список) */
+  
+  /* Уменьшаем размер плиток на мобильных */
+  .tile { 
+    width: 260px; 
+    height: 140px; 
+  }
+  .tile.is-wide { width: 340px }
+  .tile.is-ultra { width: 420px }
+  
+  /* Уменьшаем размер шрифта подзаголовка */
+  .lead { font-size: clamp(22px,5.6vw,36px) }
+}
