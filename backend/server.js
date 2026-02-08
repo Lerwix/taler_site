@@ -1,7 +1,6 @@
 const express = require('express');
 const cors = require('cors');
 const { Pool } = require('pg');
-require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -10,47 +9,107 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// === ВАЖНО: ОСТАВЬТЕ ТОЛЬКО ЭТОТ pool! ===
+// Подключение к PostgreSQL (Railway дает DATABASE_URL)
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
-    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+    ssl: { rejectUnauthorized: false }
 });
 
-// === УДАЛИТЬ ЭТОТ ВТОРОЙ pool! ===
-// const pool = new Pool({
-//     host: process.env.DB_HOST,
-//     port: process.env.DB_PORT,
-//     database: process.env.DB_NAME,
-//     user: process.env.DB_USER,
-//     password: process.env.DB_PASSWORD,
-// });
-
-// Проверка подключения к БД
-pool.connect((err, client, release) => {
-    if (err) {
-        console.error('❌ Ошибка подключения к PostgreSQL:', err.message);
-    } else {
-        console.log('✅ Подключено к PostgreSQL');
-        release();
+// Автоматическое создание таблицы при запуске
+async function initializeDatabase() {
+    try {
+        console.log('🔍 Проверяем подключение к базе данных...');
+        
+        // Создаем таблицу если её нет
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS applications (
+                id SERIAL PRIMARY KEY,
+                nickname VARCHAR(100) NOT NULL,
+                age INTEGER NOT NULL,
+                timezone VARCHAR(50),
+                telegram VARCHAR(100) NOT NULL,
+                discord VARCHAR(100),
+                role VARCHAR(50) NOT NULL,
+                experience TEXT,
+                minecraft_exp TEXT,
+                motivation TEXT,
+                portfolio TEXT,
+                time_available VARCHAR(100),
+                created_at TIMESTAMP DEFAULT NOW(),
+                status VARCHAR(20) DEFAULT 'new'
+            )
+        `);
+        
+        console.log('✅ Таблица "applications" создана/проверена');
+        
+        // Проверяем что всё работает
+        const testQuery = await pool.query('SELECT COUNT(*) as count FROM applications');
+        console.log(`📊 Заявок в базе: ${testQuery.rows[0].count}`);
+        
+    } catch (error) {
+        console.error('❌ Ошибка при работе с базой данных:', error.message);
     }
-});
+}
 
-// 1. Главная страница
+// 1. Главная страница - проверка работы
 app.get('/', (req, res) => {
     res.json({ 
         success: true,
         message: '🚀 Сервер TALER работает!',
+        database: process.env.DATABASE_URL ? 'Подключена' : 'Нет подключения',
         endpoints: {
             submit_application: 'POST /api/application',
             get_status: 'GET /api/status',
-            get_applications: 'GET /api/applications?role=[role]'
+            get_applications: 'GET /api/applications',
+            test_db: 'GET /api/test-db'
         }
     });
 });
 
-// 2. API для сохранения заявок
+// 2. Проверка статуса сервера и БД
+app.get('/api/status', async (req, res) => {
+    try {
+        // Проверяем подключение к БД
+        const dbResult = await pool.query('SELECT NOW() as time');
+        const countResult = await pool.query('SELECT COUNT(*) FROM applications');
+        
+        res.json({
+            success: true,
+            server: 'online',
+            database: 'connected',
+            timestamp: dbResult.rows[0].time,
+            applications_count: parseInt(countResult.rows[0].count),
+            port: PORT
+        });
+        
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            error: 'Database error: ' + error.message
+        });
+    }
+});
+
+// 3. Тест подключения к БД
+app.get('/api/test-db', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT version()');
+        res.json({
+            success: true,
+            message: '✅ База данных подключена',
+            version: result.rows[0].version
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            error: '❌ Ошибка БД: ' + error.message
+        });
+    }
+});
+
+// 4. API для сохранения заявок
 app.post('/api/application', async (req, res) => {
-    console.log('📨 Получена новая заявка');
+    console.log('📨 Получена новая заявка:', req.body);
     
     try {
         const {
@@ -59,21 +118,11 @@ app.post('/api/application', async (req, res) => {
             portfolio, time_available
         } = req.body;
 
-        console.log('Данные:', { nickname, age, telegram, role });
-
-        // Валидация
+        // Валидация обязательных полей
         if (!nickname || !age || !telegram || !role) {
             return res.status(400).json({
                 success: false,
-                error: 'Заполните обязательные поля'
-            });
-        }
-
-        // Проверка Telegram username
-        if (!/^[A-Za-z0-9_]{5,32}$/.test(telegram)) {
-            return res.status(400).json({
-                success: false,
-                error: 'Некорректный Telegram username'
+                error: 'Заполните обязательные поля: nickname, age, telegram, role'
             });
         }
 
@@ -88,24 +137,24 @@ app.post('/api/application', async (req, res) => {
             [
                 nickname, 
                 parseInt(age), 
-                timezone, 
+                timezone || null, 
                 telegram, 
                 discord || null,
                 role, 
-                experience, 
-                minecraft_exp, 
-                motivation,
+                experience || null, 
+                minecraft_exp || null, 
+                motivation || null,
                 portfolio || null, 
-                time_available
+                time_available || null
             ]
         );
 
         const application = result.rows[0];
-        console.log('✅ Заявка сохранена в БД. ID:', application.id);
+        console.log('✅ Заявка сохранена. ID:', application.id);
 
         res.status(201).json({
             success: true,
-            message: '✅ Заявка успешно сохранена в базе данных',
+            message: '✅ Заявка успешно сохранена',
             data: {
                 id: application.id,
                 nickname: application.nickname,
@@ -116,15 +165,15 @@ app.post('/api/application', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Ошибка сохранения заявки:', error);
+        console.error('❌ Ошибка сохранения:', error);
         res.status(500).json({
             success: false,
-            error: 'Внутренняя ошибка сервера: ' + error.message
+            error: 'Ошибка сервера: ' + error.message
         });
     }
 });
 
-// 3. API для получения заявок
+// 5. API для получения заявок
 app.get('/api/applications', async (req, res) => {
     try {
         const { role, limit = 10, offset = 0 } = req.query;
@@ -157,47 +206,8 @@ app.get('/api/applications', async (req, res) => {
     }
 });
 
-// 4. Статус сервера
-app.get('/api/status', async (req, res) => {
-    try {
-        const dbResult = await pool.query('SELECT NOW()');
-        const appsCount = await pool.query('SELECT COUNT(*) FROM applications');
-        
-        res.json({
-            success: true,
-            server: 'online',
-            database: 'connected',
-            timestamp: dbResult.rows[0].now,
-            applications: parseInt(appsCount.rows[0].count),
-            port: PORT
-        });
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            error: 'Database connection failed: ' + error.message
-        });
-    }
-});
-
-// 5. Тест БД
-app.get('/api/test-db', async (req, res) => {
-    try {
-        const result = await pool.query('SELECT version()');
-        res.json({
-            success: true,
-            message: 'База данных подключена',
-            version: result.rows[0].version
-        });
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            error: error.message
-        });
-    }
-});
-
 // Запуск сервера
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
     console.log(`
 🚀 Сервер TALER запущен!
 ────────────────────────
@@ -207,4 +217,7 @@ app.listen(PORT, () => {
 🔍 Статус: http://localhost:${PORT}/api/status
 ────────────────────────
     `);
+    
+    // Инициализируем базу данных
+    await initializeDatabase();
 });
