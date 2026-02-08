@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const { Pool } = require('pg');
+const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -8,6 +9,9 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// Раздаем статические файлы фронтенда
+app.use(express.static(path.join(__dirname, '../frontend')));
 
 // Подключение к PostgreSQL (Railway дает DATABASE_URL)
 const pool = new Pool({
@@ -51,22 +55,14 @@ async function initializeDatabase() {
     }
 }
 
-// 1. Главная страница - проверка работы
+// ========== МАРШРУТЫ ==========
+
+// Главная страница - ОТДАЕМ HTML (убрали дублирование)
 app.get('/', (req, res) => {
-    res.json({ 
-        success: true,
-        message: '🚀 Сервер TALER работает!',
-        database: process.env.DATABASE_URL ? 'Подключена' : 'Нет подключения',
-        endpoints: {
-            submit_application: 'POST /api/application',
-            get_status: 'GET /api/status',
-            get_applications: 'GET /api/applications',
-            test_db: 'GET /api/test-db'
-        }
-    });
+    res.sendFile(path.join(__dirname, '../frontend/index.html'));
 });
 
-// 2. Проверка статуса сервера и БД
+// Проверка статуса сервера и БД
 app.get('/api/status', async (req, res) => {
     try {
         // Проверяем подключение к БД
@@ -90,7 +86,7 @@ app.get('/api/status', async (req, res) => {
     }
 });
 
-// 3. Тест подключения к БД
+// Тест подключения к БД
 app.get('/api/test-db', async (req, res) => {
     try {
         const result = await pool.query('SELECT version()');
@@ -107,7 +103,7 @@ app.get('/api/test-db', async (req, res) => {
     }
 });
 
-// 4. API для сохранения заявок
+// API для сохранения заявок
 app.post('/api/application', async (req, res) => {
     console.log('📨 Получена новая заявка:', req.body);
     
@@ -173,7 +169,7 @@ app.post('/api/application', async (req, res) => {
     }
 });
 
-// 5. API для получения заявок
+// API для получения заявок
 app.get('/api/applications', async (req, res) => {
     try {
         const { role, limit = 10, offset = 0 } = req.query;
@@ -204,6 +200,22 @@ app.get('/api/applications', async (req, res) => {
             error: error.message
         });
     }
+});
+
+// Информация о сервере (альтернатива для JSON)
+app.get('/api/info', (req, res) => {
+    res.json({ 
+        success: true,
+        message: '🚀 Сервер TALER работает!',
+        database: process.env.DATABASE_URL ? 'Подключена' : 'Нет подключения',
+        endpoints: {
+            submit_application: 'POST /api/application',
+            get_status: 'GET /api/status',
+            get_applications: 'GET /api/applications',
+            test_db: 'GET /api/test-db',
+            info: 'GET /api/info'
+        }
+    });
 });
 
 // Запуск сервера
