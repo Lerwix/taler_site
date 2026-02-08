@@ -2,14 +2,22 @@ const TelegramBot = require('node-telegram-bot-api');
 const path = require('path');
 
 require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
-// URL API для Railway
+
+// URL API для Railway - ИСПРАВЛЕНО
 const API_URL = process.env.RAILWAY_STATIC_URL 
   ? `https://${process.env.RAILWAY_STATIC_URL}/api` 
   : 'http://localhost:3000/api';
-const bot = new TelegramBot(process.env.TELEGRAM_ADMIN_BOT_TOKEN, { polling: true });
-const adminChatIds = process.env.ADMIN_CHAT_IDS ? process.env.ADMIN_CHAT_IDS.split(',') : [];
+
+// Используем основной токен из Railway Variables
+const botToken = process.env.TELEGRAM_BOT_TOKEN || process.env.TELEGRAM_ADMIN_BOT_TOKEN;
+const bot = new TelegramBot(botToken, { polling: true });
+
+const adminChatIds = process.env.TELEGRAM_ADMIN_CHAT_IDS ? 
+  process.env.TELEGRAM_ADMIN_CHAT_IDS.split(',') : 
+  [];
 
 console.log('🤖 Telegram админ-бот запущен...');
+console.log('🌐 API URL:', API_URL);
 
 const userStates = new Map();
 
@@ -210,8 +218,9 @@ async function showApplications(chatId, messageId, role, offset) {
         if (result.data && result.data.length > 0) {
             const app = result.data[0];
             
+            // Получаем общее количество
             const totalResponse = await fetch(
-                `${API_URL}/applications?role=${roleParam}&limit=1&offset=${offset}`
+                `${API_URL}/applications?role=${roleParam}`
             );
             const totalResult = await totalResponse.json();
             const total = totalResult.total || result.data.length;
@@ -298,4 +307,4 @@ bot.on('polling_error', (error) => {
     console.error('❌ Ошибка polling:', error.code);
 });
 
-console.log('✅ Бот готов!');
+console.log('✅ Бот готов! Отправьте /start в боте');
