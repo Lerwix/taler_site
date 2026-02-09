@@ -1316,30 +1316,91 @@ footer {
   opacity: .8; /* Легкая прозрачность */
 }
 
-/* ===== АДАПТИВНОСТЬ (MOBILE) ===== */
-
-/* Планшеты и маленькие десктопы (до 1199px) */
-@media (max-width: 1199px) {
-  .staff { grid-template-columns: repeat(2,1fr) } /* 2 колонки вместо 3 */
+/* Добавьте это в начало вашего CSS */
+* {
+    box-sizing: border-box; /* Важно для правильных расчетов ширины */
 }
 
-/* Мобильные устройства (до 740px) */
-@media (max-width: 740px) {
-  header { 
-    height: 86vh; /* Меньшая высота */
-    min-height: 560px; /* Меньшая минимальная высота */
-  }
-  
-  .staff { grid-template-columns: 1fr } /* 1 колонка (вертикальный список) */
-  
-  /* Уменьшаем размер плиток на мобильных */
-  .tile { 
-    width: 260px; 
-    height: 140px; 
-  }
-  .tile.is-wide { width: 340px }
-  .tile.is-ultra { width: 420px }
-  
-  /* Уменьшаем размер шрифта подзаголовка */
-  .lead { font-size: clamp(22px,5.6vw,36px) }
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    max-width: 100%;
+}
+
+/* Контейнер по умолчанию */
+.container {
+    width: 100%;
+    max-width: 1200px; /* или другое значение для десктопа */
+    margin: 0 auto;
+    padding: 0 15px;
+}
+/* ===== АДАПТИВНОСТЬ (MOBILE) ===== */
+/* Адаптивность - теперь форма адаптируется для экранов меньше 926px */
+@media (max-width: 926px) {
+    .application-box {
+        width: calc(100% - 40px); /* Отступы по бокам на мобильных */
+        margin: 20px 20px 0 20px; /* 20px сверху и по бокам */
+        padding: 20px;
+        border-width: 1px;
+    }
+    
+    .mc-title h1 {
+        font-size: clamp(18px, 5vw, 28px);
+    }
+    
+    .mc-subtitle {
+        font-size: 0.8em;
+    }
+    
+    .mc-button {
+        padding: 12px 20px;
+        font-size: 0.8em;
+        max-width: 280px;
+    }
+    
+    .form-section {
+        padding: 15px;
+    }
+    
+    .section-title {
+        padding: 8px 15px;
+        margin: -15px -15px 15px -15px;
+        font-size: 0.8em;
+    }
+    
+    .mc-input, .mc-select, textarea.mc-input {
+        padding: 10px 12px;
+        font-size: 0.8em;
+    }
+    
+    .tg-link {
+        padding: 6px 12px;
+        font-size: 0.7em;
+    }
+}
+
+@media (max-width: 480px) {
+    .application-box {
+        width: calc(100% - 20px); /* Меньше отступов на очень маленьких экранах */
+        margin: 20px 10px 0 10px;
+        padding: 15px;
+    }
+    
+    .mc-button {
+        max-width: 100%; /* Кнопка на всю ширину на мобильных */
+    }
+}
+
+/* Специальные стили для выбранного option в select */
+.mc-select option {
+    background: #1e1e1e;
+    color: #fff;
+    padding: 10px;
+    font-family: 'Press Start 2P', monospace;
+}
+
+.mc-select option:checked {
+    background: #3e3e3e;
+    color: #17c964;
 }
