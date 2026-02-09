@@ -6,16 +6,18 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 
-// Раздаем статические файлы фронтенда
-app.use(express.static(path.join(__dirname, '../frontend')));
+// Раздаем статические файлы из корня проекта
+app.use(express.static(path.join(__dirname, '..')));
 
-// Главная страница - фронтенд
+// Дополнительный маршрут для файлов из frontend
+app.use('/frontend', express.static(path.join(__dirname, '../frontend')));
+
+// Главная страница
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/index.html'));
+    res.sendFile(path.join(__dirname, '../index.html'));
 });
 
 // Подключение к PostgreSQL (Railway)
@@ -25,7 +27,6 @@ const pool = new Pool({
 });
 
 // ==================== ЗАПУСК СУЩЕСТВУЮЩЕГО БОТА ====================
-// Передаем переменные окружения для adminBot.js
 process.env.TELEGRAM_ADMIN_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 process.env.ADMIN_CHAT_IDS = process.env.TELEGRAM_ADMIN_CHAT_IDS;
 process.env.RAILWAY_STATIC_URL = process.env.RAILWAY_STATIC_URL;
@@ -36,7 +37,6 @@ require('./bot/adminBot');
 console.log('🤖 Существующий Telegram бот подключен');
 // ==================== КОНЕЦ БОТА ====================
 
-// Автоматическое создание таблицы
 async function initializeDatabase() {
     try {
         console.log('🔍 Проверяем базу данных...');
@@ -70,7 +70,6 @@ async function initializeDatabase() {
     }
 }
 
-// API: Статус сервера
 app.get('/api/status', async (req, res) => {
     try {
         const dbResult = await pool.query('SELECT NOW() as time');
@@ -92,7 +91,6 @@ app.get('/api/status', async (req, res) => {
     }
 });
 
-// API: Тест БД
 app.get('/api/test-db', async (req, res) => {
     try {
         const result = await pool.query('SELECT version()');
@@ -109,7 +107,6 @@ app.get('/api/test-db', async (req, res) => {
     }
 });
 
-// API: Отправка заявки
 app.post('/api/application', async (req, res) => {
     console.log('📨 Получена новая заявка:', req.body);
     
@@ -120,7 +117,6 @@ app.post('/api/application', async (req, res) => {
             portfolio, time_available
         } = req.body;
 
-        // Валидация
         if (!nickname || !age || !telegram || !role) {
             return res.status(400).json({
                 success: false,
@@ -128,7 +124,6 @@ app.post('/api/application', async (req, res) => {
             });
         }
 
-        // Проверка Telegram
         if (!/^[A-Za-z0-9_]{5,32}$/.test(telegram)) {
             return res.status(400).json({
                 success: false,
@@ -136,7 +131,6 @@ app.post('/api/application', async (req, res) => {
             });
         }
 
-        // Сохранение в БД
         const result = await pool.query(
             `INSERT INTO applications (
                 nickname, age, timezone, telegram, discord,
@@ -183,7 +177,6 @@ app.post('/api/application', async (req, res) => {
     }
 });
 
-// API: Получение заявок
 app.get('/api/applications', async (req, res) => {
     try {
         const { role, limit = 10, offset = 0 } = req.query;
@@ -216,7 +209,6 @@ app.get('/api/applications', async (req, res) => {
     }
 });
 
-// API: Количество заявок
 app.get('/api/count', async (req, res) => {
     try {
         const result = await pool.query('SELECT COUNT(*) FROM applications');
@@ -229,7 +221,6 @@ app.get('/api/count', async (req, res) => {
     }
 });
 
-// API: Информация о сервере
 app.get('/api/info', (req, res) => {
     res.json({ 
         success: true,
@@ -247,18 +238,16 @@ app.get('/api/info', (req, res) => {
     });
 });
 
-// Запуск сервера
 app.listen(PORT, async () => {
     console.log(`
 🚀 Сервер TALER запущен!
 ────────────────────────
 📡 Порт: ${PORT}
-🌐 URL: https://easygoing-compassion-production-93f3.up.railway.app
+🌐 URL: ${process.env.RAILWAY_STATIC_URL || `http://localhost:${PORT}`}
 🤖 Telegram бот: ${process.env.TELEGRAM_BOT_TOKEN ? '✅ Активен' : '❌ Не настроен'}
 📊 API: /api/status, /api/application, /api/applications
 ────────────────────────
     `);
     
-    // Инициализация базы данных
     await initializeDatabase();
 });
