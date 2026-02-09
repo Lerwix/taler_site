@@ -252,4 +252,3 @@ app.listen(PORT, async () => {
     await initializeDatabase();
 });
 
-что можно оптимизировать здесь
