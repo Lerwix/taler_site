@@ -1,6 +1,21 @@
 const TelegramBot = require('node-telegram-bot-api');
 const fetch = require('node-fetch');
 
+// Функция для получения корректного URL
+function getBaseUrl() {
+    let url = process.env.RAILWAY_STATIC_URL || 'easygoing-compassion-production-93f3.up.railway.app';
+    
+    // Добавляем протокол, если его нет
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        url = 'https://' + url;
+    }
+    
+    console.log(`🌐 Используем URL: ${url}`);
+    return url;
+}
+
+const BASE_URL = getBaseUrl();
+
 // Конфигурация
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const ADMIN_CHAT_IDS = process.env.TELEGRAM_ADMIN_CHAT_IDS 
@@ -124,10 +139,7 @@ function showMainMenu(chatId, userName = 'админ') {
 // Получение заявок с API
 async function getApplications(role, offset = 0) {
     try {
-        // Используем ваш Railway URL
-        const baseUrl = process.env.RAILWAY_STATIC_URL || 'https://easygoing-compassion-production-93f3.up.railway.app';
-        
-        let url = `${baseUrl}/api/applications?limit=1&offset=${offset}`;
+        let url = `${BASE_URL}/api/applications?limit=1&offset=${offset}`;
         
         if (role !== 'all' && role !== 'new') {
             url += `&role=${role}`;
@@ -166,7 +178,7 @@ async function getApplications(role, offset = 0) {
         console.log('📊 Получено заявок:', result.data?.length || 0);
         
         // Получаем общее количество
-        const countUrl = `${baseUrl}/api/count${role !== 'all' && role !== 'new' ? `?role=${role}` : ''}`;
+        const countUrl = `${BASE_URL}/api/count${role !== 'all' && role !== 'new' ? `?role=${role}` : ''}`;
         console.log('📡 Запрос количества:', countUrl);
         
         const countResponse = await fetch(countUrl, { timeout: 5000 });
@@ -208,7 +220,7 @@ async function showApplication(chatId, messageId = null, role, offset) {
         const result = await getApplications(role, offset);
         
         if (!result.success) {
-            const message = `❌ Ошибка подключения к серверу: ${result.error}`;
+            const message = `❌ Ошибка: ${result.error}`;
             if (messageId) {
                 return bot.editMessageText(message, {
                     chat_id: chatId,
@@ -359,7 +371,7 @@ bot.onText(/\/test/, async (msg) => {
     const testMsg = await bot.sendMessage(chatId, '🔍 Тестируем соединение с API...');
     
     try {
-        const url = 'https://easygoing-compassion-production-93f3.up.railway.app/api/status';
+        const url = `${BASE_URL}/api/status`;
         const response = await fetch(url, { timeout: 5000 });
         const text = await response.text();
         
@@ -493,7 +505,7 @@ bot.on('webhook_error', (error) => {
 
 console.log('✅ Telegram бот успешно запущен и готов к работе!');
 console.log(`📱 Админы: ${ADMIN_CHAT_IDS.join(', ')}`);
-console.log(`🌐 API URL: https://easygoing-compassion-production-93f3.up.railway.app`);
+console.log(`🌐 API URL: ${BASE_URL}`);
 
 // Экспорт бота для использования в server.js
 module.exports = bot;
