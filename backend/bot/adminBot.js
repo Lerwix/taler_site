@@ -1,4 +1,5 @@
 const TelegramBot = require('node-telegram-bot-api');
+const fetch = require('node-fetch');
 
 // Конфигурация
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
@@ -14,7 +15,15 @@ if (!BOT_TOKEN) {
 console.log(`🤖 Бот запущен. Админы: ${ADMIN_CHAT_IDS.length}`);
 
 // Инициализация бота
-const bot = new TelegramBot(BOT_TOKEN, { polling: true });
+const bot = new TelegramBot(BOT_TOKEN, { 
+    polling: true,
+    request: {
+        agentOptions: {
+            keepAlive: true,
+            family: 4
+        }
+    }
+});
 
 // Хранилище состояния (для каждого чата)
 const userState = {};
@@ -26,8 +35,12 @@ function isAdmin(chatId) {
 
 // Форматирование даты
 function formatDate(dateString) {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('ru-RU') + ', ' + date.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    try {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('ru-RU') + ', ' + date.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    } catch (e) {
+        return dateString || 'Не указано';
+    }
 }
 
 // Получение названия роли
@@ -47,16 +60,18 @@ function getRoleName(roleKey) {
 
 // Форматирование заявки
 function formatApplication(app, index, total) {
+    if (!app) return '❌ Заявка не найдена';
+    
     return `🎮 <b>НОВАЯ ЗАЯВКА НА СЕРВЕР TALER</b>
 
 👤 <b>Основная информация:</b>
-• Никнейм: ${app.nickname}
-• Возраст: ${app.age}
+• Никнейм: ${app.nickname || 'Не указано'}
+• Возраст: ${app.age || 'Не указано'}
 • Часовой пояс: ${app.timezone || 'Не указано'}
-• Telegram: @${app.telegram}
+• Telegram: @${app.telegram || 'Не указано'}
 ${app.discord ? `• Discord: ${app.discord}\n` : ''}
 🎯 <b>Роль:</b>
-${getRoleName(app.role)}
+${getRoleName(app.role) || 'Не указано'}
 
 📊 <b>Опыт:</b>
 ${app.experience || 'Не указано'}
@@ -109,7 +124,9 @@ function showMainMenu(chatId, userName = 'админ') {
 // Получение заявок с API
 async function getApplications(role, offset = 0) {
     try {
-        const baseUrl = process.env.RAILWAY_STATIC_URL || 'http://localhost:3000';
+        // Используем ваш Railway URL
+        const baseUrl = process.env.RAILWAY_STATIC_URL || 'https://easygoing-compassion-production-93f3.up.railway.app';
+        
         let url = `${baseUrl}/api/applications?limit=1&offset=${offset}`;
         
         if (role !== 'all' && role !== 'new') {
@@ -117,20 +134,53 @@ async function getApplications(role, offset = 0) {
         }
         
         console.log('📡 Запрос к API:', url);
-        const response = await fetch(url);
+        
+        const response = await fetch(url, {
+            timeout: 10000,
+            headers: {
+                'Accept': 'application/json'
+            }
+        });
         
         if (!response.ok) {
+            console.error(`❌ API ошибка ${response.status}: ${response.statusText}`);
             throw new Error(`API ошибка: ${response.status}`);
         }
         
-        const result = await response.json();
+        const text = await response.text();
+        console.log('📄 Ответ API:', text.substring(0, 200));
+        
+        let result;
+        try {
+            result = JSON.parse(text);
+        } catch (e) {
+            console.error('❌ Ошибка парсинга JSON:', e.message);
+            throw new Error('Неверный формат ответа от сервера');
+        }
+        
+        if (!result.success) {
+            console.error('❌ API вернул ошибку:', result.error);
+            throw new Error(result.error || 'Ошибка API');
+        }
+        
         console.log('📊 Получено заявок:', result.data?.length || 0);
         
         // Получаем общее количество
         const countUrl = `${baseUrl}/api/count${role !== 'all' && role !== 'new' ? `?role=${role}` : ''}`;
-        const countResponse = await fetch(countUrl);
-        const countResult = await countResponse.json();
-        const total = countResult.count || 0;
+        console.log('📡 Запрос количества:', countUrl);
+        
+        const countResponse = await fetch(countUrl, { timeout: 5000 });
+        const countText = await countResponse.text();
+        let countResult;
+        
+        try {
+            countResult = JSON.parse(countText);
+        } catch (e) {
+            console.error('❌ Ошибка парсинга JSON для count:', e.message);
+            countResult = { count: result.data ? result.data.length : 0 };
+        }
+        
+        const total = countResult.count || (result.data ? result.data.length : 0);
         
         return {
             success: true,
@@ -139,10 +189,12 @@ async function getApplications(role, offset = 0) {
             currentIndex: offset
         };
     } catch (error) {
-        console.error('❌ Ошибка получения заявок:', error);
+        console.error('❌ Ошибка получения заявок:', error.message);
         return {
             success: false,
-            error: error.message
+            error: error.message,
+            application: null,
+            total: 0
         };
     }
 }
@@ -150,17 +202,20 @@ async function getApplications(role, offset = 0) {
 // Показ заявки
 async function showApplication(chatId, messageId = null, role, offset) {
     try {
+        console.log(`📨 Показ заявки: роль=${role}, offset=${offset}`);
+        
         // Получаем данные
         const result = await getApplications(role, offset);
         
         if (!result.success) {
-            const message = '❌ Ошибка подключения к серверу';
+            const message = `❌ Ошибка подключения к серверу: ${result.error}`;
             if (messageId) {
                 return bot.editMessageText(message, {
                     chat_id: chatId,
                     message_id: messageId,
                     reply_markup: {
                         inline_keyboard: [
+                            [{ text: '🔄 Повторить', callback_data: `${role}_${offset}` }],
                             [{ text: '📋 В меню', callback_data: 'menu' }]
                         ]
                     }
@@ -169,6 +224,7 @@ async function showApplication(chatId, messageId = null, role, offset) {
                 return bot.sendMessage(chatId, message, {
                     reply_markup: {
                         inline_keyboard: [
+                            [{ text: '🔄 Повторить', callback_data: `${role}_${offset}` }],
                             [{ text: '📋 В меню', callback_data: 'menu' }]
                         ]
                     }
@@ -244,7 +300,7 @@ async function showApplication(chatId, messageId = null, role, offset) {
         
     } catch (error) {
         console.error('❌ Ошибка показа заявки:', error);
-        const errorMessage = '❌ Ошибка загрузки заявки';
+        const errorMessage = '❌ Внутренняя ошибка бота';
         
         if (messageId) {
             return bot.editMessageText(errorMessage, {
@@ -290,6 +346,33 @@ bot.onText(/\/menu/, (msg) => {
     }
     
     showMainMenu(chatId, userName);
+});
+
+// Команда /test - для проверки
+bot.onText(/\/test/, async (msg) => {
+    const chatId = msg.chat.id;
+    
+    if (!isAdmin(chatId)) {
+        return bot.sendMessage(chatId, '🚫 У вас нет доступа.');
+    }
+    
+    const testMsg = await bot.sendMessage(chatId, '🔍 Тестируем соединение с API...');
+    
+    try {
+        const url = 'https://easygoing-compassion-production-93f3.up.railway.app/api/status';
+        const response = await fetch(url, { timeout: 5000 });
+        const text = await response.text();
+        
+        await bot.editMessageText(`✅ API отвечает!\nСтатус: ${response.status}\nОтвет: ${text.substring(0, 100)}`, {
+            chat_id: chatId,
+            message_id: testMsg.message_id
+        });
+    } catch (error) {
+        await bot.editMessageText(`❌ API недоступен: ${error.message}`, {
+            chat_id: chatId,
+            message_id: testMsg.message_id
+        });
+    }
 });
 
 // Обработка callback-запросов (кнопок)
@@ -394,6 +477,14 @@ Object.entries(roleCommands).forEach(([command, role]) => {
 // Обработка ошибок
 bot.on('polling_error', (error) => {
     console.error('❌ Ошибка polling Telegram:', error.message);
+    
+    // Если ошибка 409 (два бота запущены), ждем и перезапускаем
+    if (error.message.includes('409')) {
+        console.log('⚠️ Обнаружено несколько ботов. Перезапуск через 5 секунд...');
+        setTimeout(() => {
+            console.log('🔄 Перезапуск бота...');
+        }, 5000);
+    }
 });
 
 bot.on('webhook_error', (error) => {
@@ -402,6 +493,7 @@ bot.on('webhook_error', (error) => {
 
 console.log('✅ Telegram бот успешно запущен и готов к работе!');
 console.log(`📱 Админы: ${ADMIN_CHAT_IDS.join(', ')}`);
+console.log(`🌐 API URL: https://easygoing-compassion-production-93f3.up.railway.app`);
 
-// Экспорт функций для использования в server.js
+// Экспорт бота для использования в server.js
 module.exports = bot;
