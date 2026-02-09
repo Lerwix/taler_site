@@ -1,0 +1,572 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>TALER • Команда сервера</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+  <meta name="description" content="TALER — элитная команда сервера. Модераторы, строители, тестировщики. Вход по заявке.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Crect width='64' height='64' rx='12' fill='%2317c964'/%3E%3Cpath d='M14 40h36v6H14zM18 18h28v6H18zM22 30h20v6H22z' fill='%23090'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="frontend/styles.css">
+  <base href="https://easygoing-compassion-production-93f3.up.railway.app/">
+</head>
+<body class="body">
+
+  <header>
+    <!------------1 Макет--------------->
+    <div class="noise" aria-hidden="true"></div>
+
+    <div class="parallax" id="parallax" aria-hidden="true">
+      <div class="tiles">
+        <div class="rows">
+          <div class="row" data-pos="top">
+  <div class="track">
+    <div class="tile is-wide"><img alt loading="lazy" src="frontend/img1.avif"></div>
+    <div class="tile"><img alt loading="lazy" src="frontend/img2.avif"></div>
+    <div class="tile is-ultra"><img alt loading="lazy" src="frontend/img3.avif"></div>
+    <div class="tile"><img alt loading="lazy" src="frontend/img4.avif"></div>
+    <div class="tile is-wide"><img alt loading="lazy" src="frontend/img5.avif"></div>
+    <div class="tile is-wide"><img alt loading="lazy" src="frontend/img6.avif"></div>
+    <div class="tile"><img alt loading="lazy" src="frontend/img7.avif"></div>
+    <div class="tile is-ultra"><img alt loading="lazy" src="frontend/img8.avif"></div>
+  </div>
+  <div class="track">
+    <div class="tile is-wide"><img alt loading="lazy" src="frontend/img1.avif"></div>
+    <div class="tile"><img alt loading="lazy" src="frontend/img2.avif"></div>
+    <div class="tile is-ultra"><img alt loading="lazy" src="frontend/img3.avif"></div>
+    <div class="tile"><img alt loading="lazy" src="frontend/img4.avif"></div>
+    <div class="tile is-wide"><img alt loading="lazy" src="frontend/img5.avif"></div>
+    <div class="tile is-wide"><img alt loading="lazy" src="frontend/img6.avif"></div>
+    <div class="tile"><img alt loading="lazy" src="frontend/img7.avif"></div>
+    <div class="tile is-ultra"><img alt loading="lazy" src="frontend/img8.avif"></div>
+  </div>
+</div>
+
+<div class="row" data-pos="mid">
+  <div class="track">
+    <div class="tile"><img alt loading="lazy" src="frontend/img9.avif"></div>
+    <div class="tile is-wide"><img alt loading="lazy" src="frontend/img10.avif"></div>
+    <div class="tile"><img alt loading="lazy" src="frontend/img11.avif"></div>
+    <div class="tile is-ultra"><img alt loading="lazy" src="frontend/img12.avif"></div>
+    <div class="tile"><img alt loading="lazy" src="frontend/img13.avif"></div>
+    <div class="tile is-wide"><img alt loading="lazy" src="frontend/img14.avif"></div>
+    <div class="tile"><img alt loading="lazy" src="frontend/img15.avif"></div>
+    <div class="tile is-ultra"><img alt loading="lazy" src="frontend/img16.avif"></div>
+  </div>
+  <div class="track">
+    <div class="tile"><img alt loading="lazy" src="frontend/img9.avif"></div>
+    <div class="tile is-wide"><img alt loading="lazy" src="frontend/img10.avif"></div>
+    <div class="tile"><img alt loading="lazy" src="frontend/img11.avif"></div>
+    <div class="tile is-ultra"><img alt loading="lazy" src="frontend/img12.avif"></div>
+    <div class="tile"><img alt loading="lazy" src="frontend/img13.avif"></div>
+    <div class="tile is-wide"><img alt loading="lazy" src="frontend/img14.avif"></div>
+    <div class="tile"><img alt loading="lazy" src="frontend/img15.avif"></div>
+    <div class="tile is-ultra"><img alt loading="lazy" src="frontend/img16.avif"></div>
+  </div>
+</div>
+
+<div class="row" data-pos="bot">
+  <div class="track">
+    <div class="tile is-ultra"><img alt loading="lazy" src="frontend/img17.avif"></div>
+    <div class="tile"><img alt loading="lazy" src="frontend/img18.avif"></div>
+    <div class="tile is-wide"><img alt loading="lazy" src="frontend/img19.avif"></div>
+    <div class="tile"><img alt loading="lazy" src="frontend/img20.avif"></div>
+    <div class="tile is-wide"><img alt loading="lazy" src="frontend/img21.avif"></div>
+    <div class="tile"><img alt loading="lazy" src="frontend/img22.avif"></div>
+    <div class="tile is-ultra"><img alt loading="lazy" src="frontend/img23.avif"></div>
+    <div class="tile"><img alt loading="lazy" src="frontend/img24.avif"></div>
+  </div>
+  <div class="track">
+    <div class="tile is-ultra"><img alt loading="lazy" src="frontend/img17.avif"></div>
+    <div class="tile"><img alt loading="lazy" src="frontend/img18.avif"></div>
+    <div class="tile is-wide"><img alt loading="lazy" src="frontend/img19.avif"></div>
+    <div class="tile"><img alt loading="lazy" src="frontend/img20.avif"></div>
+    <div class="tile is-wide"><img alt loading="lazy" src="frontend/img21.avif"></div>
+    <div class="tile"><img alt loading="lazy" src="frontend/img22.avif"></div>
+    <div class="tile is-ultra"><img alt loading="lazy" src="frontend/img23.avif"></div>
+    <div class="tile"><img alt loading="lazy" src="frontend/img24.avif"></div>
+  </div>
+</div>
+        </div>
+      </div>
+    </div>
+    <div class="hero wrap">
+      <div class="logo" aria-label="TALER">
+        <div class="logo-img-wrap">
+          <img class="logo-img" src="frontend/logo-img.png" alt="Логотип TALER — буква Т">
+        </div>
+      </div>
+
+      <h1>Мы делаем это возможным.</h1>
+      <p class="lead">Строй историю вместе с нами</p>
+
+      <div class="cta">
+        <a class="btn btn-primary" href="#apply" id="joinBtn">
+          Вступить в команду
+          <span class="ring" aria-hidden="true"></span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="roles">
+      <div class="wrap">
+        <h2 style="margin:0 0 20px">Кого ищем</h2>
+
+        <!-----------Макет набора на работу + JS---------------->
+
+  <div class="container">
+    <nav class="sidebar" id="menu">
+      <button class="active" onclick="showRole('media')">🎥 Медиа Проекта</button>
+      <button onclick="showRole('dev')">💻 Разработчик</button>
+      <button onclick="showRole('support')">📞 Поддержка игроков</button>
+      <button onclick="showRole('qa')">🔎 Тестировщик</button>
+      <button onclick="showRole('builder')">🏗️ Билдер</button>
+      <button onclick="showRole('moderator')">🛡️ Модератор</button>
+    </nav>
+
+    <main class="content" id="details">
+      <h1>🎥 Медиа Проекта</h1>
+      <ul>
+        <li>Опыт в создании контента</li>
+        <li>Навыки монтажа</li>
+        <li>Адекватность</li>
+      </ul>
+      <p class="highlight">TikTok / YouTube · Продвижение · Креативность</p>
+    </main>
+  </div>
+
+  <script>
+    const roles = {
+      media: {
+        title: '🎥 Медиа Проекта',
+        list: [
+          'Опыт в создании контента',
+          'Навыки монтажа',
+          'Адекватность'
+        ],
+        bottom: 'TikTok / YouTube · Продвижение · Креативность'
+      },
+      dev: {
+        title: '💻 Разработчик',
+        list: [
+          'Знание Java/PaperMC',
+          'Опыт с Git, IDE',
+          'Очень хорошее знание сервера Талер'
+        ],
+        bottom: 'Плагины · Конфиги · Механики'
+      },
+      support: {
+        title: '📞 Поддержка игроков',
+        list: [
+          'Коммуникабельность',
+          'Регулярный онлайн',
+          'Очень хорошее знание сервера Талер'
+        ],
+        bottom: 'Телеграм · Ответы · Помощь игрокам'
+      },
+      qa: {
+        title: '🔎 Тестировщик',
+        list: [
+          'Внимательность к деталям',
+          'Знание механник Талера',
+          'Большой опыт в Майнкрафте'
+        ],
+        bottom: 'Проверка обновлений · Плагины'
+      },
+      builder: {
+        title: '🏗️ Билдер',
+        list: [
+          'Опыт строительства',
+          'Командная работа',
+          'Умение работать с WorldEdit'
+        ],
+        bottom: 'Карты · Ивенты · Строительство'
+      },
+      moderator: {
+        title: '🛡️ Модератор',
+        list: [
+          '13+ лет, грамотная речь',
+          'Активность 2+ часа/день',
+          'Вы должны хорошо знать сервер Талер'
+        ],
+        bottom: 'Контроль игроков · Ивенты · Чат'
+      }
+    };
+
+    function showRole(roleKey) {
+      const role = roles[roleKey];
+      const details = document.getElementById('details');
+      details.innerHTML = `<h1>${role.title}</h1><ul>` + role.list.map(i => `<li>${i}</li>`).join('') + `</ul><p class="highlight">${role.bottom}</p>`;
+
+      document.querySelectorAll('.sidebar button').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+    }
+  </script>
+
+  <!--------------3 Макет------------------>
+  <div class="application-box" id="apply">
+    <div class="pixel-grid"></div>
+    
+    <div class="mc-title">
+        <h1>⚔️ ПОДАТЬ ЗАЯВКУ</h1>
+        <div class="mc-subtitle">Заполни форму – ответим в Telegram<span class="loading-dots"></span></div>
+    </div>
+    
+    <div class="telegram-info">
+        <strong>Telegram для связи:</strong><br>
+        <a href="https://t.me/taler_support" class="tg-link" target="_blank">@taler_support</a>
+        <a href="https://t.me/taler_community" class="tg-link" target="_blank">@taler_community</a>
+    </div>
+    
+    <form id="applicationForm">
+        <!-- Основная информация -->
+        <div class="form-section">
+            <div class="section-title">👤 ОСНОВНАЯ ИНФОРМАЦИЯ</div>
+            
+            <div class="mc-input-group">
+                <label class="mc-label" for="nickname">Игровой никнейм (Nickname)</label>
+                <input type="text" class="mc-input" id="nickname" name="nickname" placeholder="Введите ваш ник в Minecraft..." required>
+            </div>
+            
+            <div class="mc-input-group">
+                <label class="mc-label" for="age">Возраст</label>
+                <input type="number" class="mc-input" id="age" name="age" placeholder="Сколько вам лет?" min="12" max="99" required>
+            </div>
+            
+            <div class="mc-input-group">
+                <label class="mc-label" for="timezone">Страна/Часовой пояс</label>
+                <input type="text" class="mc-input" id="timezone" name="timezone" placeholder="Откуда вы? (например: Россия, MSK+3)" required>
+            </div>
+        </div>
+        
+        <!-- Выбор роли -->
+        <div class="form-section">
+            <div class="section-title">🎮 ВЫБОР РОЛИ</div>
+            
+            <div class="mc-input-group">
+                <label class="mc-label" for="role">На какую роль подаетесь?</label>
+                <select class="mc-select" id="role" name="role" required>
+                    <option value="">-- Выберите роль --</option>
+                    <option value="media">🎥 Медиа Проекта</option>
+                    <option value="dev">💻 Разработчик</option>
+                    <option value="support">📞 Поддержка игроков</option>
+                    <option value="qa">🔎 Тестировщик</option>
+                    <option value="builder">🏗️ Билдер</option>
+                    <option value="moderator">🛡️ Модератор</option>
+                </select>
+            </div>
+            
+            <div class="mc-input-group">
+                <label class="mc-label" for="experience">Опыт на подобной позиции</label>
+                <textarea class="mc-input" id="experience" name="experience" placeholder="Был ли у вас опыт модерации/администрирования? Где и сколько?..." required></textarea>
+            </div>
+        </div>
+        
+        <!-- Контактная информация -->
+        <div class="form-section">
+            <div class="section-title">📱 КОНТАКТНАЯ ИНФОРМАЦИЯ</div>
+            
+            <div class="mc-input-group">
+                <label class="mc-label" for="telegram">Telegram username</label>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span style="color: #17c964; font-family: 'Press Start 2P', monospace; font-size: 0.9em;">@</span>
+                    <input type="text" class="mc-input" id="telegram" name="telegram" 
+                           placeholder="username" pattern="[A-Za-z0-9_]{5,32}" 
+                           title="Только буквы, цифры и нижнее подчеркивание (5-32 символа)" required
+                           style="flex: 1;">
+                </div>
+                <div style="margin-top: 8px; font-size: 0.75em; color: var(--text-dim);">
+                    ⚠️ Без @ и русских букв. Пример: <code>ivan_ivanov</code> или <code>IvanPro</code>
+                </div>
+            </div>
+            
+            <div class="mc-input-group">
+                <label class="mc-label" for="discord">Discord (если есть)</label>
+                <input type="text" class="mc-input" id="discord" name="discord" 
+                       placeholder="username#0000 или ссылка на сервер">
+            </div>
+        </div>
+
+        <!-- Коротко о себе -->
+        <div class="form-section">
+            <div class="section-title">📝 КОРОТКО О СЕБЕ</div>
+            
+            <div class="mc-input-group">
+                <label class="mc-label" for="minecraft_exp">Ваш опыт в Minecraft</label>
+                <textarea class="mc-input" id="minecraft_exp" name="minecraft_exp" placeholder="Сколько играете? В какие проекты/сервера? Любимые аспекты игры?..." required></textarea>
+            </div>
+            
+            <div class="mc-input-group">
+                <label class="mc-label" for="motivation">Почему именно вы?</label>
+                <textarea class="mc-input" id="motivation" name="motivation" placeholder="Что вы можете предложить серверу? Ваши сильные стороны..." required></textarea>
+            </div>
+            
+            <div class="mc-input-group">
+                <label class="mc-label" for="portfolio">Ссылки на работы/портфолио (если есть)</label>
+                <input type="text" class="mc-input" id="portfolio" name="portfolio" placeholder="Скриншоты, видео, ссылки на постройки...">
+            </div>
+            
+            <div class="mc-input-group">
+                <label class="mc-label" for="time_available">Сколько времени готовы уделять серверу?</label>
+                <input type="text" class="mc-input" id="time_available" name="time_available" placeholder="Часов в день/неделю..." required>
+            </div>
+        </div>
+        
+        <button type="submit" class="mc-button">
+            <span>Отправить заявку</span>
+        </button>
+    </form>
+    
+    <div style="text-align: center; margin-top: 25px; color: var(--text-dim); font-size: 0.9em; border-top: 1px solid rgba(123,167,109,0.2); padding-top: 15px;">
+        ⚡ После отправки заявки ожидайте ответа в Telegram в течение 24-48 часов
+    </div>
+</div>
+
+<script>
+// Конфигурация API
+const API_URL = '/api';
+
+// Функция для получения названия поля
+function getFieldName(fieldId) {
+    const names = {
+        'nickname': 'Игровой никнейм',
+        'age': 'Возраст',
+        'timezone': 'Часовой пояс',
+        'telegram': 'Telegram',
+        'role': 'Роль',
+        'experience': 'Опыт',
+        'minecraft_exp': 'Опыт в Minecraft',
+        'motivation': 'Мотивация',
+        'time_available': 'Доступное время'
+    };
+    return names[fieldId] || fieldId;
+}
+
+// Динамическое обновление ссылки на Telegram
+const telegramInput = document.getElementById('telegram');
+if (telegramInput) {
+    telegramInput.addEventListener('input', function(e) {
+        const username = e.target.value.trim();
+        const linkElement = document.getElementById('telegram-link');
+        
+        if (linkElement) {
+            if (username && /^[A-Za-z0-9_]{5,32}$/.test(username)) {
+                linkElement.innerHTML = `<a href="https://t.me/${username}" target="_blank" style="color: #17c964; text-decoration: none;">t.me/${username}</a>`;
+                linkElement.parentElement.style.color = '#17c964';
+            } else {
+                linkElement.innerHTML = '—';
+                linkElement.parentElement.style.color = 'var(--text-dim)';
+            }
+        }
+    });
+}
+
+// Валидация и отправка формы
+document.getElementById('applicationForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    // Собираем данные
+    const formData = {
+        nickname: document.getElementById('nickname').value.trim(),
+        age: document.getElementById('age').value,
+        timezone: document.getElementById('timezone').value.trim(),
+        telegram: document.getElementById('telegram').value.trim(),
+        discord: document.getElementById('discord').value.trim() || '',
+        role: document.getElementById('role').value,
+        experience: document.getElementById('experience').value.trim(),
+        minecraft_exp: document.getElementById('minecraft_exp').value.trim(),
+        motivation: document.getElementById('motivation').value.trim(),
+        portfolio: document.getElementById('portfolio').value.trim() || '',
+        time_available: document.getElementById('time_available').value.trim()
+    };
+    
+    console.log('📝 Данные формы:', formData);
+    
+    // Проверка Telegram
+    if (!/^[A-Za-z0-9_]{5,32}$/.test(formData.telegram)) {
+        alert('⚠️ Некорректный Telegram username. Используйте только латинские буквы, цифры и нижнее подчеркивание (5-32 символа)');
+        document.getElementById('telegram').focus();
+        return;
+    }
+    
+    // Проверка обязательных полей
+    const requiredFields = ['nickname', 'age', 'timezone', 'role', 'experience', 'minecraft_exp', 'motivation', 'time_available'];
+    for (const field of requiredFields) {
+        if (!formData[field]) {
+            alert(`⚠️ Заполните поле: ${getFieldName(field)}`);
+            document.getElementById(field).focus();
+            return;
+        }
+    }
+    
+    const button = this.querySelector('.mc-button');
+    const originalText = button.innerHTML;
+    
+    // Анимация отправки
+    button.innerHTML = '<span>📤 Отправка в базу данных...<span class="loading-dots"></span></span>';
+    button.disabled = true;
+    
+    try {
+        console.log('🔄 Отправка на сервер:', API_URL + '/application');
+        
+        const response = await fetch(API_URL + '/application', {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        });
+        
+        console.log('📨 Ответ сервера:', response.status);
+        
+        const result = await response.json();
+        console.log('📊 Результат:', result);
+        
+        if (result.success) {
+            button.innerHTML = '<span>✅ Сохранено в БД!</span>';
+            button.style.background = 'linear-gradient(to bottom, #2a5d24, #0a2906)';
+            
+            // Показываем успешное сообщение
+            showSuccessModal(result.data);
+            
+            // Сброс формы через 2 секунды
+            setTimeout(() => {
+                this.reset();
+                button.innerHTML = originalText;
+                button.disabled = false;
+                button.style.background = '';
+            }, 2000);
+        } else {
+            throw new Error(result.error || 'Ошибка сервера');
+        }
+    } catch (error) {
+        console.error('❌ Ошибка отправки:', error);
+        button.innerHTML = '<span>❌ Ошибка отправки</span>';
+        button.style.background = 'linear-gradient(to bottom, #5d2424, #290606)';
+        
+        alert('❌ Не удалось отправить заявку:\n' + error.message + 
+              '\n\nПопробуйте еще раз или свяжитесь с нами в Telegram: @taler_support');
+        
+        setTimeout(() => {
+            button.innerHTML = originalText;
+            button.disabled = false;
+            button.style.background = '';
+        }, 2000);
+    }
+});
+
+// Функция показа успешного модального окна
+function showSuccessModal(data) {
+    const roleNames = {
+        'media': '🎥 Медиа Проекта',
+        'dev': '💻 Разработчик',
+        'support': '📞 Поддержка игроков',
+        'qa': '🔎 Тестировщик',
+        'builder': '🏗️ Билдер',
+        'moderator': '🛡️ Модератор'
+    };
+    
+    const modal = document.createElement('div');
+    modal.className = 'success-modal';
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+        font-family: 'Press Start 2P', monospace;
+    `;
+    
+    modal.innerHTML = `
+        <div style="
+            background: var(--card);
+            border: 2px solid var(--brand);
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(23,201,100,0.3);
+            animation: popIn 0.3s ease-out;
+        ">
+            <div style="font-size: 3em; margin-bottom: 20px;">🎉</div>
+            <h2 style="color: var(--brand); margin: 0 0 15px 0; font-size: 1.3em;">ЗАЯВКА СОХРАНЕНА!</h2>
+            
+            <div style="color: var(--text); text-align: left; font-size: 0.9em; line-height: 1.5; margin-bottom: 20px;">
+                <p><strong>ID заявки:</strong> ${data.id}</p>
+                <p><strong>Никнейм:</strong> ${data.nickname}</p>
+                <p><strong>Роль:</strong> ${roleNames[data.role] || data.role}</p>
+                <p><strong>Telegram:</strong> <a href="https://t.me/${data.telegram}" target="_blank" style="color: #17c964;">@${data.telegram}</a></p>
+                
+                <div style="background: rgba(23,201,100,0.1); border-radius: 6px; padding: 10px; margin: 15px 0;">
+                    <strong>ℹ️ Информация:</strong>
+                    <ul style="margin: 10px 0 0 0; padding-left: 20px; text-align: left;">
+                        <li>✅ Данные сохранены в базе данных</li>
+                        <li>📞 Мы свяжемся с вами в Telegram</li>
+                        <li>⏰ Ответ в течение 24-48 часов</li>
+                        <li>🔄 Вы можете отслеживать статус заявки</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <button onclick="this.parentElement.parentElement.remove()" style="
+                background: var(--brand);
+                color: #000;
+                border: none;
+                padding: 12px 30px;
+                border-radius: 6px;
+                font-family: 'Press Start 2P', monospace;
+                cursor: pointer;
+                font-size: 0.9em;
+                font-weight: bold;
+                margin-top: 10px;
+            ">ПОНЯТНО</button>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Добавляем CSS анимацию
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes popIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+    `;
+    document.head.appendChild(style);
+}
+</script>
+
+          <p style="color:var(--text-dim); margin-top:10px">
+            Данные сохраняются в базу данных PostgreSQL
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap" style="text-align:center">
+      <div class="brands" style="margin-bottom:14px">
+        <span style="opacity:.85">TALER</span>
+        <span style="opacity:.35">•</span>
+        <span style="opacity:.7">Команда</span>
+        <span style="opacity:.35">•</span>
+        <span style="opacity:.7">t.me/architaler</span>
+      </div>
+      <small style="color:var(--text-dim)">© TALER Server. Неофициальный проект Minecraft.</small>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
